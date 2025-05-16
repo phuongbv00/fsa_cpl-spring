@@ -1,0 +1,44 @@
+package fsa.cplminiprj.repository.impl;
+
+import fsa.cplminiprj.repository.CrudRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+
+import java.util.List;
+import java.util.Optional;
+
+public abstract class AbstractCrudRepository<E, ID> implements CrudRepository<E, ID> {
+    private final EntityManager em;
+    private final Class<E> eClass;
+
+    protected AbstractCrudRepository(EntityManagerFactory emf, Class<E> eClass) {
+        this.em = emf.createEntityManager();
+        this.eClass = eClass;
+    }
+
+    @Override
+    public Optional<E> findById(ID id) {
+        return Optional.ofNullable(em.find(eClass, id));
+    }
+
+    @Override
+    public List<E> findAll() {
+        String queryString = "select e from %s e".formatted(eClass.getSimpleName());
+        return em.createQuery(queryString, eClass).getResultList();
+    }
+
+    @Override
+    public void save(E entity) {
+        em.persist(entity);
+    }
+
+    @Override
+    public void update(ID id, E entity) {
+        findById(id).ifPresent(em::merge);
+    }
+
+    @Override
+    public void delete(ID id) {
+        findById(id).ifPresent(em::remove);
+    }
+}
