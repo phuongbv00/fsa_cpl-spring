@@ -9,15 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 @Transactional
 public class HomeController {
     private final UserRepository userRepository;
-
-    List<User> testList = new ArrayList<>();
 
     public HomeController(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -28,7 +23,7 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/create-test-data")
+    @GetMapping("/seed")
     public String createTestData() {
         for (int i = 0; i < 10; i++) {
             User user = new User();
