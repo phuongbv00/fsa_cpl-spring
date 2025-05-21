@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+    Index of Thymeleaf
+    <div th:text="${hello}"></div>
+
+    <div th:if="${showTips}">
+        This is tips
+        <ul>
+            <li th:each="tip : ${tips}">
+                <span th:text="${tip}"></span>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -106,7 +106,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void update(Long id, User entity) {
-        findById(id).ifPresent(em::merge);
+        findById(id).ifPresent(__ -> em.merge(entity));
     }
 
     @Override

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 @Controller
 @Transactional
 public class HomeController {
@@ -19,7 +21,13 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String index() {
+    public String index(Model model) {
+        model.addAttribute("header", "This is header!");
+        model.addAttribute("hello", "Hello world!");
+        model.addAttribute("showTips", true);
+//        model.addAttribute("showTips", false);
+        List<String> tips = List.of("Tip 1", "Tip 2", "Tip 3");
+        model.addAttribute("tips", tips);
         return "index";
     }
 
