@@ -13,9 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl extends AbstractCrudRepository<User, Long> implements UserRepository {
     @PersistenceContext
     private EntityManager em;
+
+    public UserRepositoryImpl() {
+        super(User.class);
+    }
 
     @Override
     public Optional<User> findByUsername(String username) {
@@ -87,30 +91,5 @@ public class UserRepositoryImpl implements UserRepository {
         TypedQuery<UserStatusStats> query = em
                 .createQuery("select new fsa.cplminiprj.dto.UserStatusStats(u.status, cast(count(u) as int)) from User u group by u.status", UserStatusStats.class);
         return query.getResultList();
-    }
-
-    @Override
-    public Optional<User> findById(Long id) {
-        return Optional.ofNullable(em.find(User.class, id));
-    }
-
-    @Override
-    public List<User> findAll() {
-        return em.createQuery("select e from User e", User.class).getResultList();
-    }
-
-    @Override
-    public void save(User entity) {
-        em.persist(entity);
-    }
-
-    @Override
-    public void update(Long id, User entity) {
-        findById(id).ifPresent(__ -> em.merge(entity));
-    }
-
-    @Override
-    public void delete(Long id) {
-        findById(id).ifPresent(em::remove);
     }
 }

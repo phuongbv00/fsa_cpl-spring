@@ -6,15 +6,30 @@
 </head>
 <body>
     <ul>
-        <li th:each="user : ${users}">
+        <li th:each="user : ${users}" class="user-record" th:data-uid="${user.id}">
             <span th:text="${user.id}"></span>
             -
             <span th:text="${user.username}"></span>
             -
             <span th:text="${user.status}"></span>
             -
-            <a th:href="@{/user/delete/{id}(id = ${user.id})}">Delete</a>
+            <button class="btn-delete" th:data-uid="${user.id}">Delete</button>
+<!--            <a th:href="@{/user/delete/{id}(id = ${user.id})}">Delete</a>-->
         </li>
     </ul>
+    <script th:inline="javascript">
+        const baseUserDeleteUri = /*[[@{/user/delete/}]]*/ '';
+        document.querySelectorAll('.btn-delete').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                fetch(baseUserDeleteUri + this.dataset.uid, {
+                    method: 'GET'
+                }).then(function (response) {
+                    if (response.ok) {
+                        document.querySelector('.user-record[data-uid="' + btn.dataset.uid + '"]').remove();
+                    }
+                })
+            })
+        })
+    </script>
 </body>
 </html>

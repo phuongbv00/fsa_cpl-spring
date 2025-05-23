@@ -2,17 +2,18 @@ package fsa.cplminiprj.repository.impl;
 
 import fsa.cplminiprj.repository.CrudRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 import java.util.Optional;
 
 public abstract class AbstractCrudRepository<E, ID> implements CrudRepository<E, ID> {
-    private final EntityManager em;
     private final Class<E> eClass;
 
-    protected AbstractCrudRepository(EntityManagerFactory emf, Class<E> eClass) {
-        this.em = emf.createEntityManager();
+    @PersistenceContext
+    private EntityManager em;
+
+    protected AbstractCrudRepository(Class<E> eClass) {
         this.eClass = eClass;
     }
 
