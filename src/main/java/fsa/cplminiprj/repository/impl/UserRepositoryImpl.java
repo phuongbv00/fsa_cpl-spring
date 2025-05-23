@@ -3,6 +3,8 @@ package fsa.cplminiprj.repository.impl;
 import fsa.cplminiprj.dto.UserStatusStats;
 import fsa.cplminiprj.entity.User;
 import fsa.cplminiprj.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -12,6 +14,9 @@ import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl extends AbstractCrudRepository<User, Long> implements UserRepository {
+    @PersistenceContext
+    protected EntityManager em;
+
     public UserRepositoryImpl() {
         super(User.class);
     }
@@ -86,5 +91,10 @@ public class UserRepositoryImpl extends AbstractCrudRepository<User, Long> imple
         TypedQuery<UserStatusStats> query = em
                 .createQuery("select new fsa.cplminiprj.dto.UserStatusStats(u.status, cast(count(u) as int)) from User u group by u.status", UserStatusStats.class);
         return query.getResultList();
+    }
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
     }
 }
