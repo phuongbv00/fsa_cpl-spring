@@ -11,7 +11,7 @@ public abstract class AbstractCrudRepository<E, ID> implements CrudRepository<E,
     private final Class<E> eClass;
 
     @PersistenceContext
-    private EntityManager em;
+    protected EntityManager em;
 
     protected AbstractCrudRepository(Class<E> eClass) {
         this.eClass = eClass;
@@ -35,7 +35,7 @@ public abstract class AbstractCrudRepository<E, ID> implements CrudRepository<E,
 
     @Override
     public void update(ID id, E entity) {
-        findById(id).ifPresent(em::merge);
+        findById(id).ifPresent(__ -> em.merge(entity));
     }
 
     @Override
