@@ -1,5 +1,8 @@
 package fsa.cplminiprj.config;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebInit extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -16,5 +19,14 @@ public class WebInit extends AbstractAnnotationConfigDispatcherServletInitialize
     @Override
     protected String[] getServletMappings() {
         return new String[]{"/"};
+    }
+
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        super.onStartup(servletContext);
+
+        DelegatingFilterProxy securityFilter = new DelegatingFilterProxy("springSecurityFilterChain");
+        servletContext.addFilter("springSecurityFilterChain", securityFilter)
+                .addMappingForUrlPatterns(null, false, "/*");
     }
 }

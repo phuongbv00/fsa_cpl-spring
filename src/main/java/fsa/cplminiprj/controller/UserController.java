@@ -2,6 +2,7 @@ package fsa.cplminiprj.controller;
 
 import fsa.cplminiprj.entity.User;
 import fsa.cplminiprj.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -13,9 +14,11 @@ import java.util.List;
 @RequestMapping("/user")
 @Transactional
 public class UserController {
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
@@ -33,6 +36,7 @@ public class UserController {
 
     @PostMapping("/add")
     public String add(@ModelAttribute("user") User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return "redirect:/user";
     }
