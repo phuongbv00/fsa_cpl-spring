@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,12 +35,17 @@ public class UserController {
 
     @GetMapping("/add")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public String showAdd() {
+    public String showAdd(Model model) {
+        User user = new User();
+        model.addAttribute("user", user);
         return "features/user/form";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("user") User user) {
+    public String add(@Validated @ModelAttribute("user") User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "features/user/form";
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(1);
         user.setRoles(Set.of(User.UserRole.USER));

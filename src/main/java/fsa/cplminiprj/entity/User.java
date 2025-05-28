@@ -1,6 +1,9 @@
 package fsa.cplminiprj.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,8 +19,10 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Long id;
     @Column(nullable = false, unique = true)
-
+    @Email(message = "Must be an email")
+    @NotBlank(message = "Cannot be blank")
     private String username;
+    @Min(value = 8, message = "At least 8 chars")
     private String password;
     private int status;
 
