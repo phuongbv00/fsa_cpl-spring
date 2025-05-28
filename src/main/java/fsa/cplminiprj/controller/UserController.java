@@ -2,6 +2,7 @@ package fsa.cplminiprj.controller;
 
 import fsa.cplminiprj.entity.User;
 import fsa.cplminiprj.repository.UserRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/user")
@@ -30,6 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public String showAdd() {
         return "features/user/form";
     }
@@ -37,6 +40,8 @@ public class UserController {
     @PostMapping("/add")
     public String add(@ModelAttribute("user") User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setStatus(1);
+        user.setRoles(Set.of(User.UserRole.USER));
         userRepository.save(user);
         return "redirect:/user";
     }

@@ -2,10 +2,11 @@ package fsa.cplminiprj.entity;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -15,9 +16,14 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Long id;
     @Column(nullable = false, unique = true)
+
     private String username;
     private String password;
     private int status;
+
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<UserRole> roles;
 
     public User() {
     }
@@ -46,7 +52,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return roles.stream().map(r -> new SimpleGrantedAuthority(r.name())).toList();
     }
 
     public String getPassword() {
@@ -65,6 +71,14 @@ public class User implements UserDetails {
         this.status = status;
     }
 
+    public Set<UserRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<UserRole> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -73,5 +87,9 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public enum UserRole {
+        ADMIN, USER
     }
 }
